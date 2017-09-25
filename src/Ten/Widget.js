@@ -1,1 +1,2 @@
-if (!Ten.Widget) Ten.Widget = {};
+if (!Ten.Widget)
+    Ten.Widget = {};
