@@ -57,7 +57,7 @@ NotificationArea.prototype = {
         var opts = {
             isStatus: true,
             onclick: onclick,
-            id: Math.random()
+            id: Math.random(),
         };
         if (this.isShown) {
             this.hideElement({ hasNext: true });

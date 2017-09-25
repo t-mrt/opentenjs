@@ -53,10 +53,15 @@ NotificationArea.prototype = {
   },
 
   setStatus: function (text, onclick) {
-    var opts = {
+    var opts: {
+        isStatus: boolean
+        onclick: any,
+        id: number,
+        showNow?: boolean,
+    } = {
       isStatus: true,
       onclick: onclick,
-      id: Math.random()
+      id: Math.random(),
     };
     if (this.isShown) {
       this.hideElement({hasNext: true});
@@ -96,7 +101,7 @@ NotificationArea.prototype = {
       this.closeText();
       return;
     }
-    
+
     var data = this.infoData;
     for (var i = 0; i < data.length; i++) {
       if (data[i].id == id) {
