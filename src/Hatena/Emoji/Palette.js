@@ -1,1 +1,2 @@
-if (!Hatena.Emoji.Palette) Hatena.Emoji.Palette = {};
+if (!Hatena.Emoji.Palette)
+    Hatena.Emoji.Palette = {};

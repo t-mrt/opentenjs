@@ -1,5 +1,4 @@
-
 Ten.Deferred = (function () {
-/*include JSDeferred*/
+    /*include JSDeferred*/
     return Deferred;
 })();

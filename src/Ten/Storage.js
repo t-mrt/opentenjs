@@ -1,1 +1,2 @@
-if (!Ten.Storage) Ten.Storage = {};
+if (!Ten.Storage)
+    Ten.Storage = {};

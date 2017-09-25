@@ -1,10 +1,9 @@
 /*
 // require Ten.js
 */
-
 /* Ten.SubWindow */
 Ten.SubWindow = new Ten.Class({
-    initialize: function(args) {
+    initialize: function (args) {
         var c = this.constructor;
         if (c.singleton && c._cache) {
             return c._cache;
@@ -23,7 +22,8 @@ Ten.SubWindow = new Ten.Class({
         if (c.draggable) {
             this._draggable = new Ten.Draggable(div, this.handle);
         }
-        if (c.singleton) c._cache = this;
+        if (c.singleton)
+            c._cache = this;
         return this;
     },
     _baseStyle: {
@@ -80,11 +80,11 @@ Ten.SubWindow = new Ten.Class({
     singleton: true,
     draggable: true,
     _cache: null
-},{
+}, {
     screen: null,
     windowObserver: null,
     visible: false,
-    addContainerAndCloseButton: function() {
+    addContainerAndCloseButton: function () {
         var win = this.window;
         var c = this.constructor;
         var div = document.createElement('div');
@@ -98,7 +98,7 @@ Ten.SubWindow = new Ten.Class({
             this.handle = handle;
         }
         if (c.closeButton) {
-	    var btn = document.createElement('img');
+            var btn = document.createElement('img');
             btn.src = c.closeButton;
             btn.alt = 'close';
             Ten.Style.applyStyle(btn, c.closeButtonStyle);
@@ -115,8 +115,8 @@ Ten.SubWindow = new Ten.Class({
             new Ten.Observer(screen, 'onclick', this, 'hide');
         }
     },
-    show: function(pos) {
-        pos = (pos.x && pos.y) ? pos : {x:0, y:0};
+    show: function (pos) {
+        pos = (pos.x && pos.y) ? pos : { x: 0, y: 0 };
         var s = this.window.style;
         s.display = 'block';
         s.left = pos.x + 'px';
@@ -130,36 +130,37 @@ Ten.SubWindow = new Ten.Class({
         this.windowObserver = new Ten.Observer(document.body, 'onkeypress', this, 'handleEscape');
         this.visible = true;
     },
-    handleEscape: function(e) {
-        if (!e.isKey('escape')) return;
+    handleEscape: function (e) {
+        if (!e.isKey('escape'))
+            return;
         this.hide();
         e.stop();
     },
-    hide: function() {
-        if (this._draggable) this._draggable.endDrag();
+    hide: function () {
+        if (this._draggable)
+            this._draggable.endDrag();
         this.window.style.display = 'none';
-        if (this.screen) this.screen.style.display = 'none';
-        if (this.windowObserver) this.windowObserver.stop();
+        if (this.screen)
+            this.screen.style.display = 'none';
+        if (this.windowObserver)
+            this.windowObserver.stop();
         this.visible = false;
         this.window.blur();
     }
 });
-
 /* Ten.Draggable */
 Ten.Draggable = new Ten.Class({
-    initialize: function(element,handle) {
+    initialize: function (element, handle) {
         this.element = element;
         this.handle = handle || element;
         this.startObserver = new Ten.Observer(this.handle, 'onmousedown', this, 'startDrag');
         this.handlers = [];
     }
-},{
-    startDrag: function(e) {
-        if (e.targetIsFormElements()) return;
-        this.delta = Ten.Position.subtract(
-            e.mousePosition(),
-            Ten.Geometry.getElementPosition(this.element)
-        );
+}, {
+    startDrag: function (e) {
+        if (e.targetIsFormElements())
+            return;
+        this.delta = Ten.Position.subtract(e.mousePosition(), Ten.Geometry.getElementPosition(this.element));
         this.handlers = [
             new Ten.Observer(document, 'onmousemove', this, 'drag'),
             new Ten.Observer(document, 'onmouseup', this, 'endDrag'),
@@ -167,7 +168,7 @@ Ten.Draggable = new Ten.Class({
         ];
         e.stop();
     },
-    drag: function(e) {
+    drag: function (e) {
         var pos = Ten.Position.subtract(e.mousePosition(), this.delta);
         Ten.Style.applyStyle(this.element, {
             left: pos.x + 'px',
@@ -175,10 +176,11 @@ Ten.Draggable = new Ten.Class({
         });
         e.stop();
     },
-    endDrag: function(e) {
+    endDrag: function (e) {
         for (var i = 0; i < this.handlers.length; i++) {
             this.handlers[i].stop();
         }
-        if(e) e.stop();
+        if (e)
+            e.stop();
     }
 });

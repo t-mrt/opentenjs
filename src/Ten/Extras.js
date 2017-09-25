@@ -1,1 +1,2 @@
-if (!Ten.Extras) Ten.Extras = {};
+if (!Ten.Extras)
+    Ten.Extras = {};
