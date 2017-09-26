@@ -110,10 +110,12 @@ Ten.Deferred = (function () {
             d.callback.ok = fun;
         return d;
     };
+    // @ts-ignore
     Deferred.next = Deferred.next_faster_way_readystatechange ||
         Deferred.next_faster_way_Image ||
         Deferred.next_tick ||
         Deferred.next_default;
+    // @ts-ignore
     Deferred.chain = function () {
         var chain = Deferred.next();
         for (var i = 0, len = arguments.length; i < len; i++)
@@ -140,8 +142,7 @@ Ten.Deferred = (function () {
                 }
             })(arguments[i]);
         return chain;
-    };
-    Deferred.wait = function (n) {
+    }(Deferred).wait = function (n) {
         var d = new Deferred(), t = new Date();
         var id = setTimeout(function () {
             d.call((new Date).getTime() - t.getTime());
@@ -313,9 +314,7 @@ Ten.Deferred = (function () {
             Deferred.next(function () { func.apply(target, args); });
             return d;
         };
-    };
-    Deferred.Arguments = function (args) { this.args = Array.prototype.slice.call(args, 0); };
-    Deferred.retry = function (retryCount, funcDeferred, options) {
+    }(Deferred).Arguments = function (args) { this.args = Array.prototype.slice.call(args, 0); }(Deferred).retry = function (retryCount, funcDeferred, options) {
         if (!options)
             options = {};
         var wait = options.wait || 0;
@@ -337,8 +336,7 @@ Ten.Deferred = (function () {
         };
         setTimeout(retry, 0);
         return d;
-    };
-    Deferred.methods = ["parallel", "wait", "next", "call", "loop", "repeat", "chain"];
+    }(Deferred).methods = ["parallel", "wait", "next", "call", "loop", "repeat", "chain"];
     Deferred.define = function (obj, list) {
         if (!list)
             list = Deferred.methods;

@@ -1,3 +1,4 @@
+// @ts-ignore
 Ten.Widget.DropDown.FrameMenu = function () {
     return this.init.apply(this, arguments);
 };

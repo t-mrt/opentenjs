@@ -162,6 +162,7 @@ Ten.AsyncLoader.PageFragmentLoader = new Ten.Class({
                     }
                 }
             }
+            // @ts-ignore
             for (var i in els) {
                 var el = els[i];
                 var op = el.getAttribute('data-ten-async-operation');

@@ -1,4 +1,4 @@
-if (!Ten.Draggable) Ten.Draggable = {};
+if (!Ten.Draggable) Ten.Draggable = <Ten.Draggable>{};
 if (!Ten.Draggable.prototype) Ten.Draggable.prototype = {};
 
 Ten.Draggable.prototype.startDrag = function (e) {

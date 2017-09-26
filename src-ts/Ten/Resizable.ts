@@ -82,7 +82,7 @@ Ten.Resizable = new Ten.Class({
             if (this.rejectElement) {
                 newHeight -= this.rejectElement.clientHeight;
             }
-            newSize = {height: newHeight + 'px'};
+            newSize = <{width: string;height:string}>{height: newHeight + 'px'};
             Ten.Style.applyStyle(this.innerElement, newSize);
         }
         e.stop();
