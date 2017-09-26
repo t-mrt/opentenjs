@@ -1,5 +1,6 @@
 if (!self.NR)
     self.NR = {};
+var NR = window.NR;
 if (!NR.index)
     NR.index = 0;
 NR.resetIndex = function () {
@@ -139,12 +140,9 @@ NR.Rect.prototype.toString = function () {
     r += 'Height: ' + this.height + " \n";
     return r;
 }; // toString
-/* Invalid */
 NR.Rect.invalid = new NR.Rect(0, 0, 0, 0);
 NR.Rect.invalid.label = 'Invalid';
 NR.Rect.invalid.invalid = true;
-/* --- NR.Vector - Vector --- */
-/* Constructor */
 NR.Vector = function (x /* width */, y /* height */) {
     this.x = x;
     this.y = y;
@@ -321,7 +319,6 @@ NR.Band.prototype.toString = function () {
 NR.Band.invalid = new NR.Band(0, 0, 0, 0);
 NR.Band.invalid.label = 'Invalid';
 NR.Band.invalid.invalid = true;
-/* --- NR.Element --- */
 if (!NR.Element)
     NR.Element = {};
 NR.Element.getPixelWH = function (el, w, h) {
@@ -736,7 +733,7 @@ NR.View.getViewportRects = function (view) {
                 of the |body| element - default viewport border width is 2px, but
                 |document.body.currentStyle.borderWidth|'s default is |medium|, which
                 is interpreted as |4px| when it was specified by author.
-            
+      
             var docElRects = NR.Element.getBoxAreas (bodyEl, view);
             rects.boundingClientOrigin = docElRects.border.getTopLeft ();
             rects.boundingClientOrigin.label = 'Viewport border offset';
@@ -879,6 +876,7 @@ NR.Event.getRectsExtra = function (ev) {
     return rects;
 }; // getRectsExtra
 if (self.NROnLoad) {
+    // @ts-ignore
     NROnLoad();
 }
 /*

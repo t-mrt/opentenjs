@@ -1,4 +1,34 @@
-if (!self.NR) self.NR = {};
+interface NR {
+    index?: number;
+    resetIndex: () => void;
+    Rect: Rect;
+    Element: Element;
+    Vector: Vector;
+    Band: any;
+    View: any;
+    Event: any;
+    Range:any;
+}
+interface Rect {
+    (t, r, b, l, w?, h?): void;
+    wh: (w, h) => Rect;
+    whCSS: (el, w, h) => Rect;
+    trbl: (t, r, b, l) => Rect;
+    trblCSS: (el, t, r, b, l) => Rect;
+    tlwh:(t, a, b, l, w?, h?) => Rect;
+    invalid: invalid;
+    label: string;
+    add: (a) => any;
+}
+
+interface Window {
+    NR: NR
+    NROnLoad: any;
+}
+
+if (!self.NR) self.NR = <NR> {};
+
+var NR = window.NR;
 
 if (!NR.index) NR.index = 0;
 
@@ -11,7 +41,7 @@ NR.resetIndex = function () {
 
 /* Constructors */
 
-NR.Rect = function (t, r, b, l, w, h) {
+NR.Rect = <Rect>function (t, r, b, l, w, h) {
   if (t != null) {
     this.top = t;
     this.bottom = b != null ? b : t + h;
@@ -90,14 +120,14 @@ NR.Rect.prototype.add = function (arg) {
       r = new this.constructor
           (this.top + arg.y, null, null, this.left + arg.x,
            this.width, this.height);
-    r.prevOp = 'add-vector'; 
+    r.prevOp = 'add-vector';
   } else if (arg instanceof NR.Band) {
     r = new this.constructor
         (this.top - Math.abs (arg.top),
          this.right + Math.abs (arg.right),
          this.bottom + Math.abs (arg.bottom),
          this.left - Math.abs (arg.left));
-    r.prevOp = 'out-edge'; 
+    r.prevOp = 'out-edge';
   } else {
     throw (arg + " is not a NR.Vector or NR.Band");
   }
@@ -114,14 +144,14 @@ NR.Rect.prototype.subtract = function (arg) {
       r = new this.constructor
           (this.top - arg.y, null, null, this.left - arg.x,
            this.width, this.height);
-    r.prevOp = 'add-vector'; 
+    r.prevOp = 'add-vector';
   } else if (arg instanceof NR.Band) {
       r = new this.constructor
           (this.top + Math.abs (arg.top),
            this.right - Math.abs (arg.right),
            this.bottom - Math.abs (arg.bottom),
            this.left + Math.abs (arg.left));
-      r.prevOp = 'in-edge'; 
+      r.prevOp = 'in-edge';
   } else {
     throw (arg + " is not a NR.Vector or NR.Band");
   }
@@ -172,6 +202,12 @@ NR.Rect.prototype.toString = function () {
 
 /* Invalid */
 
+interface invalid {
+    (a, b, c, d): Rect;
+    invalid: true;
+    label: string;
+}
+
 NR.Rect.invalid = new NR.Rect (0, 0, 0, 0);
 NR.Rect.invalid.label = 'Invalid';
 NR.Rect.invalid.invalid = true;
@@ -181,7 +217,22 @@ NR.Rect.invalid.invalid = true;
 
 /* Constructor */
 
-NR.Vector = function (x /* width */, y /* height */) {
+interface Vector {
+    getRenderedLeft: () => number;
+    getRenderedTop: () => number;
+    getRenderedWidth: () => number;
+    getRenderedHeight: () => number;
+    negate: () => any;
+    add: (arg) => any;
+    subtract: (arg) => any;
+    getFullLabel: () => any;
+    (x:number, y:number): void;
+    invalid: invalid;
+    label: string;
+}
+
+
+NR.Vector = <Vector>function (x /* width */, y /* height */) {
   this.x = x;
   this.y = y;
   this.width = Math.abs (x);
@@ -193,25 +244,25 @@ NR.Vector = function (x /* width */, y /* height */) {
 
 /* Box rendering properties */
 
-NR.Vector.prototype.getRenderedLeft = function () {
+(<Vector>(<any>NR.Vector).prototype).getRenderedLeft = function () {
   return this.x < 0 ? -this.width : 0;
 }; // getRenderedLeft
 
-NR.Vector.prototype.getRenderedTop = function () {
+(<Vector>(<any>NR.Vector).prototype).getRenderedTop = function () {
   return this.y < 0 ? -this.height : 0;
 }; // getRenderedTop
 
-NR.Vector.prototype.getRenderedWidth = function () {
+(<Vector>(<any>NR.Vector).prototype).getRenderedWidth = function () {
   return this.width;
 }; // getRenderedWidth
 
-NR.Vector.prototype.getRenderedHeight = function () {
+(<Vector>(<any>NR.Vector).prototype).getRenderedHeight = function () {
   return this.height;
 }; // getRenderedHeight
 
 /* Operations */
 
-NR.Vector.prototype.negate = function () {
+(<Vector>(<any>NR.Vector).prototype).negate = function () {
   var r = new this.constructor (-this.x, -this.y);
   r.invalid = this.invalid;
   r.prevOp = 'negate';
@@ -220,8 +271,8 @@ NR.Vector.prototype.negate = function () {
   return r;
 }; // negate
 
-NR.Vector.prototype.add = function (arg) {
-  if (!arg instanceof NR.Vector) {
+(<Vector>(<any>NR.Vector).prototype).add = function (arg) {
+  if (<any>!arg instanceof NR.Vector) {
     throw (arg + " is not a NR.Vector");
   }
   var r = new arg.constructor (this.x + arg.x, this.y + arg.y);
@@ -232,8 +283,8 @@ NR.Vector.prototype.add = function (arg) {
   return r;
 }; // add
 
-NR.Vector.prototype.subtract = function (arg) {
-  if (!arg instanceof NR.Vector) {
+(<Vector>(<any>NR.Vector).prototype).subtract = function (arg) {
+  if (<any>!arg instanceof NR.Vector) {
     throw (arg + " is not a NR.Vector");
   }
   var r = new arg.constructor (this.x - arg.x, this.y - arg.y);
@@ -246,7 +297,7 @@ NR.Vector.prototype.subtract = function (arg) {
 
 /* Stringifications */
 
-NR.Vector.prototype.getFullLabel = function () {
+(<Vector>(<any>NR.Vector).prototype).getFullLabel = function () {
   var label;
   if (this.prevOp === 'topleft' || this.prevOp === 'negate') {
     label = this.index + ' = ' +
@@ -264,7 +315,7 @@ NR.Vector.prototype.getFullLabel = function () {
   return label;
 }; // getFullLabel
 
-NR.Vector.prototype.toString = function () {
+(<Vector>(<any>NR.Vector).prototype).toString = function () {
   var r = '';
   if (this.invalid) {
     r = 'Invalid \n';
@@ -332,7 +383,7 @@ NR.Band.prototype.getTopLeft = function () {
 }; // getTopLeft
 
 NR.Band.prototype.add = function (arg) {
-  if (!arg instanceof NR.Band) {
+  if (<any>!arg instanceof NR.Band) {
     throw (arg + " is not a NR.Band");
   }
   var r = new arg.constructor
@@ -346,7 +397,7 @@ NR.Band.prototype.add = function (arg) {
 }; // add
 
 NR.Band.prototype.and = function (arg) {
-  if (!arg instanceof NR.Band) {
+  if (<any>!arg instanceof NR.Band) {
     throw (arg + " is not a NR.Band");
   }
   var r = new arg.constructor
@@ -395,7 +446,20 @@ NR.Band.invalid.invalid = true;
 
 /* --- NR.Element --- */
 
-if (!NR.Element) NR.Element = {};
+interface Element {
+    getPixelWH: (el, w, h) => {
+        width: any;
+        height: any;
+    };
+    getCumulativeOffsetRect:(oel, view) => any;
+    getBoxAreas:(docEl, view) => any;
+    getAttrRects:(el) => any;
+    getRects: (el, view) => any;
+    getRectsExtra: (el, view) => any;
+    getLineRects: (el, view) => any;
+}
+
+if (!NR.Element) NR.Element = <Element> {};
 
 NR.Element.getPixelWH = function (el, w, h) {
   var testEl = el.ownerDocument.createElement ('div');
@@ -480,7 +544,7 @@ NR.Element.getCumulativeOffsetRect = function (oel, view) {
 
     if (bodyEl) {
       var rects = NR.Element.getBoxAreas (bodyEl, view);
-      
+
       if (bodyEl == oel) {
         en = en.add (rects.margin);
         en.label += ', with ' + bodyEl.nodeName + ' margin';
@@ -510,7 +574,7 @@ NR.Element.getCumulativeOffsetRect = function (oel, view) {
 
     origin = origin.add (offset);
     origin.label = el.nodeName + ' cumulative offset';
-    
+
     el = el.offsetParent;
   }
 
@@ -531,7 +595,11 @@ NR.Element.getCumulativeOffsetRect = function (oel, view) {
 }; // getCumulativeOffsetRect
 
 NR.Element.getBoxAreas = function (el, view) {
-  var rects = {};
+  var rects = <{
+        margin: any;
+        border: any;
+        padding: any;
+    }>{};
   if (view.getComputedStyle) {
     var cs = view.getComputedStyle (el, null);
     rects.margin = new NR.Band (
@@ -581,7 +649,12 @@ NR.Element.getBoxAreas = function (el, view) {
 }; // getBoxAreas
 
 NR.Element.getAttrRects = function (el) {
-  var rects = {};
+  var rects = <{
+      offset: Rect;
+      client: Rect;
+      scrollableArea: Rect;
+      scrollState: Rect;
+    }>{};
 
   /* See <http://suika.fam.cx/%7Ewakaba/wiki/sw/n/offset%2A> for
      compatibility problems. */
@@ -604,7 +677,21 @@ NR.Element.getAttrRects = function (el) {
 }; // getAttrRects
 
 NR.Element.getRects = function (el, view) {
-  var rects = {};
+  var rects = <{
+    boundingClient: Rect | invalid;
+    borderBox: any;
+    offset: any;
+    client: any;
+    scrollableArea: any;
+    scrollState: any;
+    margin: any;
+    border: any;
+    padding: any;
+    marginBox: any;
+    clientAbs: any;
+    paddingBox: any;
+    contentBox: any;
+  }>{};
 
   if (el.getBoundingClientRect) {
     var origin = NR.View.getViewportRects (view).boundingClientOrigin;
@@ -628,7 +715,7 @@ NR.Element.getRects = function (el, view) {
   rects.client = elRects.client;
   rects.scrollableArea = elRects.scrollableArea;
   rects.scrollState = elRects.scrollState;
-  
+
   var cssRects = NR.Element.getBoxAreas (el, view);
   rects.margin = cssRects.margin;
   rects.border = cssRects.border;
@@ -657,7 +744,22 @@ NR.Element.getRects = function (el, view) {
 }; // getRects
 
 NR.Element.getRectsExtra = function (el, view) {
-  var rects = {};
+  var rects = <{
+      boxObject: Rect | invalid;
+      boxObjectScreen: Vector | invalid;
+      textRangeBounding: any;
+      textRangeBoundingClient: any;
+      textRangeOffset: any;
+      pos: Rect | invalid;
+      px: Rect | invalid;
+      pixel: invalid;
+      currentPos: Rect | invalid;
+      currentPx: Rect | invalid;
+      currentPixel: invalid;
+      computedPos: Rect | invalid;
+      computedPx: Rect;
+      computedPixel: Rect | invalid;
+  }>{};
 
   /* Gecko-only, deprecated */
   if (el.ownerDocument.getBoxObjectFor) {
@@ -741,7 +843,10 @@ NR.Element.getRectsExtra = function (el, view) {
 
 // Don't use - these stuffs are not interoperable at all
 NR.Element.getLineRects = function (el, view) {
-  var rects = {};
+  var rects = <{
+    clients: any[]
+    rangeClients: any;
+  }>{};
 
   /* Not supportedby WebKit */
   rects.clients = [];
@@ -782,7 +887,12 @@ if (!NR.Range) NR.Range = {};
 
 // Don't use - these stuffs are not interoperable at all
 NR.Range.getRectsExtra = function (range, view) {
-  var rects = {};
+  var rects = <{
+      bounding: Rect;
+      offset: Vector;
+      clients: any[];
+      boundingClient: Rect | invalid;
+  }>{};
 
   /* WinIE only */
   rects.bounding = NR.Rect.tlwh
@@ -855,8 +965,23 @@ NR.View.getViewportRects = function (view) {
   var bodyEl = doc.body;
 
   var quirks = doc.compatMode != 'CSS1Compat';
-  
-  var rects = {};
+
+  var rects = <{
+    windowPageOffset: Rect;
+    deOffset: any;
+    deClient: any;
+    deScrollableArea: any;
+    deScrollState: any;
+    bodyOffset: any;
+    bodyClient: any;
+    bodyScrollableArea: any;
+    bodyScrollState: any;
+    scrollState: any;
+    icb: any;
+    boundingClientOrigin: any;
+    canvasOrigin: Rect;
+    contentBox: any;
+  }>{};
 
   /* Not supported by WinIE */
   rects.windowPageOffset = new NR.Vector (view.pageXOffset, view.pageYOffset);
@@ -888,7 +1013,7 @@ NR.View.getViewportRects = function (view) {
     rects.bodyScrollableArea = NR.Vector.invalid;
   }
 
-  if (document.all && !window.opera) {
+  if (document.all && !(<any>window).opera) {
     if (quirks) {
       rects.scrollState = rects.bodyScrollState;
     } else {
@@ -905,13 +1030,13 @@ NR.View.getViewportRects = function (view) {
        and both |html| and |body| has scrollbars.  In such cases there
        is no way to obtain ICB (content edge), AFAICT. */
 
-    if (document.all && !window.opera) {
+    if (document.all && !(<any>window).opera) {
       /*
           This returns wrong value if the author does not specify the border
           of the |body| element - default viewport border width is 2px, but
           |document.body.currentStyle.borderWidth|'s default is |medium|, which
           is interpreted as |4px| when it was specified by author.
-      
+
       var docElRects = NR.Element.getBoxAreas (bodyEl, view);
       rects.boundingClientOrigin = docElRects.border.getTopLeft ();
       rects.boundingClientOrigin.label = 'Viewport border offset';
@@ -921,7 +1046,7 @@ NR.View.getViewportRects = function (view) {
           = NR.View.getBoundingClientRectOrigin (view, doc);
     }
   } else {
-    if (document.all && !window.opera) {
+    if (document.all && !(<any>window).opera) {
       rects.icb = rects.deOffset;
 
       rects.boundingClientOrigin = rects.icb.subtract (rects.deClient.getTopLeft ());
@@ -934,7 +1059,7 @@ NR.View.getViewportRects = function (view) {
     }
   }
 
-  /* Firefox's initial containing block is the padding box.  There is 
+  /* Firefox's initial containing block is the padding box.  There is
      no reliable way to detect the offset from the tl of canvas in Fx
      while returning zero in any other browsers AFAICT, sniffing Gecko by
      UA string. */
@@ -966,7 +1091,7 @@ NR.View.getViewportRects = function (view) {
   rects.contentBox.label = 'Viewport content box';
 
   if (rects.boundingClientOrigin) {
-    if (document.all && !window.opera && quirks) {
+    if (document.all && !(<any>window).opera && quirks) {
       //
     } else {
       rects.boundingClientOrigin
@@ -985,7 +1110,12 @@ NR.View.getViewportRects = function (view) {
 }; // getViewportRects
 
 NR.View.getViewportRectsExtra = function (view) {
-  var rects = {};
+  var rects = <{
+    windowInner: Rect;
+    windowScrollXY: Rect;
+    windowScrollMax: Rect;
+    document: Rect;
+  }>{};
 
   var doc = view.document;
 
@@ -1010,7 +1140,11 @@ NR.View.getViewportRectsExtra = function (view) {
 }; // getViewportRectsExtra
 
 NR.View.getWindowRects = function (view) {
-  var rects = {};
+  var rects = <{
+    screenXY: Rect;
+    outer: Rect;
+    screenTL: Rect;
+  }>{};
 
   /* Not supported by WinIE */
   rects.outer = NR.Rect.wh (view.outerWidth, view.outerHeight);
@@ -1030,8 +1164,11 @@ NR.View.getWindowRects = function (view) {
 NR.View.getScreenRects = function (view) {
   var s = view.screen;
 
-  var rects = {};
- 
+  var rects = <{
+    device: Rect;
+    avail: Rect;
+  }>{};
+
   /* top & left not supported by Opera, WinIE, WebKit */
   rects.device = NR.Rect.tlwh (s.top || 0, s.left || 0, s.width, s.height);
   rects.device.label = 'screen device';
@@ -1049,7 +1186,12 @@ NR.View.getScreenRects = function (view) {
 if (!NR.Event) NR.Event = {};
 
 NR.Event.getRects = function (ev, view, vpRects /* optional */) {
-  var rects = {};
+  var rects = <{
+      client: Rect;
+      offset: Rect;
+      viewport: Rect;
+      canvas: Rect;
+  }>{};
 
   rects.client = new NR.Vector (ev.clientX, ev.clientY);
   rects.client.label = 'event.client';
@@ -1071,7 +1213,13 @@ NR.Event.getRects = function (ev, view, vpRects /* optional */) {
 }; // getRects
 
 NR.Event.getRectsExtra = function (ev) {
-  var rects = {};
+  var rects = <{
+      screen: Rect;
+      wh: Rect;
+      page: Rect;
+      layer: Rect;
+      xy: Rect;
+  }>{};
 
   rects.screen = new NR.Vector (ev.screenX, ev.screenY);
   rects.screen.label = 'event.screen';
@@ -1098,10 +1246,11 @@ NR.Event.getRectsExtra = function (ev) {
 
 
 if (self.NROnLoad) {
+  // @ts-ignore
   NROnLoad ();
 }
 
-/* 
+/*
 
 NR.js - Cross-browser wrapper for CSSOM View attributes
 
@@ -1114,11 +1263,11 @@ Author: Wakaba <w@suika.fam.cx>.
 /* ***** BEGIN LICENSE BLOCK *****
  * Copyright 2008-2009 Wakaba <w@suika.fam.cx>.  All rights reserved.
  *
- * This program is free software; you can redistribute it and/or 
+ * This program is free software; you can redistribute it and/or
  * modify it under the same terms as Perl itself.
  *
- * Alternatively, the contents of this file may be used 
- * under the following terms (the "MPL/GPL/LGPL"), 
+ * Alternatively, the contents of this file may be used
+ * under the following terms (the "MPL/GPL/LGPL"),
  * in which case the provisions of the MPL/GPL/LGPL are applicable instead
  * of those above. If you wish to allow use of your version of this file only
  * under the terms of the MPL/GPL/LGPL, and not to allow others to
