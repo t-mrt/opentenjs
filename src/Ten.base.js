@@ -9,9 +9,11 @@ if (typeof (Ten) == 'undefined') {
             var c = klass.initialize;
         }
         else if (klass && klass.base) {
+            // @ts-ignore
             var c = function () { return klass.base[0].apply(this, arguments); };
         }
         else {
+            // @ts-ignore
             var c = function () { };
         }
         c.prototype = prototype || {};

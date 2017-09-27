@@ -141,7 +141,7 @@ Ten.AsyncLoader.PageFragmentLoader = new Ten.Class({
             var container = document.createElement('div');
             container.className = 'error-message';
             for (var i = 0; i < value.length; i++) {
-              var msg = document.createElement('p');
+              var msg: HTMLParagraphElement | HTMLDivElement = document.createElement('p');
               msg.innerHTML = 'aaa';
               msg.firstChild.data = value[i];
               container.appendChild(msg);
@@ -152,7 +152,7 @@ Ten.AsyncLoader.PageFragmentLoader = new Ten.Class({
           if (!value && Hatena.Locale) {
             var msgid = els[0] ? els[0].getAttribute('data-ok-msgid') : '';
             if (msgid && msgid.length) {
-              var msg = document.createElement('div');
+              var msg: HTMLParagraphElement | HTMLDivElement = document.createElement('div');
               msg.className = 'ok-message';
               msg.innerHTML = 'aaa';
               msg.firstChild.data = Hatena.Locale.text(msgid);
@@ -161,6 +161,7 @@ Ten.AsyncLoader.PageFragmentLoader = new Ten.Class({
           }
         }
       }
+      // @ts-ignore
       for (var i in els) {
         var el = els[i];
         var op = el.getAttribute('data-ten-async-operation');

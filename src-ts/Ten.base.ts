@@ -1,17 +1,20 @@
 /* Ten */
 if (typeof(Ten) == 'undefined') {
 
-Ten = {};
+
+Ten = <any>{};
 Ten.NAME = 'Ten';
 Ten.VERSION = 0.44;
 
 /* Ten.Class */
-Ten.Class = function(klass, prototype) {
+Ten.Class = <Ten.Class>function(klass, prototype) {
     if (klass && klass.initialize) {
         var c = klass.initialize;
     } else if(klass && klass.base) {
+        // @ts-ignore
         var c = function() { return klass.base[0].apply(this, arguments) };
     } else {
+        // @ts-ignore
         var c = function() {};
     }
     c.prototype = prototype || {};
@@ -118,7 +121,7 @@ Ten.JSONP = new Ten.Class({
         var del = uri.match(/\?/) ? '&' : '?';
         uri += del + 'callback=Ten.JSONP.callback';
         if (!uri.match(/timestamp=/)) {
-            uri += '&' + encodeURI(new Date());
+            uri += '&' + encodeURI(<string><any>new Date());
         }
         if (typeof(obj) == 'function' && typeof(method) == 'undefined') {
             obj = {callback: obj};
@@ -161,7 +164,7 @@ Ten.XHR = new Ten.Class({
 
         if (!opts) opts = {};
 
-        if (opts.method) 
+        if (opts.method)
             this.method = opts.method;
 
         var self = this;
@@ -209,7 +212,7 @@ Ten.XHR = new Ten.Class({
     makePostData: function(data) {
         var regexp = /%20/g;
         if (typeof data == 'string' || (data instanceof String)) {
-            return encodeURIComponent(data).replace(regexp, '+');
+            return encodeURIComponent(<string>data).replace(regexp, '+');
         }
         var pairs = [];
         for (var k in data) {
@@ -235,7 +238,7 @@ Ten.XHR = new Ten.Class({
         params = params ? Ten.XHR.makePostData(params) : null;
 
         req.open(this.method, url, true);
-        if (this.method == 'POST') 
+        if (this.method == 'POST')
             req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         req.send(params);
     },
@@ -352,7 +355,7 @@ Ten.Event = new Ten.Class({
 Ten.EventDispatcher = new Ten.Class({
     initialize: function() {
         this._eventListeners = {};
-    }, 
+    },
     implementEventDispatcher: function(obj) {
         Ten.Class.inherit(obj, Ten.EventDispatcher.prototype);
         obj._eventListeners = {};
@@ -445,7 +448,7 @@ Ten.DOM = new Ten.Class({
         if (typeof(parent) == 'undefined') parent = document;
         if (!tagName) return Ten.DOM.getElementsByClassName(className, parent);
         var children = parent.getElementsByTagName(tagName);
-        if (className) { 
+        if (className) {
             var elements = [];
             for (var i = 0; i < children.length; i++) {
                 var child = children[i];
@@ -684,7 +687,7 @@ Ten.DOM = new Ten.Class({
                 try {
                     if (document.readyState != 'loaded' &&
                         document.readyState != 'complete') {
-                            document.documentElement.doScroll('left');
+                            (<any>document.documentElement).doScroll('left');
                         }
                 } catch(error) {
                     return setTimeout(arguments.callee, 13);
@@ -753,7 +756,7 @@ Ten.Cookie = new Ten.Class({
                 var segment = segments.shift().replace(/^\s*|\s*$/g, '');
                 if (!segment.match(/^([^=]*)=(.*)$/))
                     continue;
-                var key = RegExp.$1, value = RegExp.$2;
+                var key = RegExp.$1, value: string | string[] = RegExp.$2;
                 if (value.indexOf('&') != -1) {
                     value = value.split(/&/);
                     for (var i = 0; i < value.length; i++)
@@ -952,7 +955,7 @@ Ten.SelectorNode = new Ten.Class({
                 var elems = func(parent);
                 var ret = [];
                 for (var n = 0; n < 1000; n++) {
-                    var i = a * n + b - 1;
+                    var i = (<number>a) * n + (<number>b) - 1;
                     if (i < 0) continue;
                     if (typeof elems[i] == 'undefined') break;
                     ret.push(elems[i]);
@@ -1048,7 +1051,7 @@ Ten._Selector = new Ten.Class({
             for (var i = 0; i < arr.length; i++) {
                 var o = arr[i];
                 if ((o && o instanceof Array) ||
-                    (o && typeof(o.length) === 'number' 
+                    (o && typeof(o.length) === 'number'
                        && typeof(o) != 'string'
                        && !o.tagName)){
                     arguments.callee(o);
@@ -1089,7 +1092,7 @@ Ten._SelectorNode = new Ten.Class({
                     var ret = [];
                     for (var i = 0, len = elems.length ; i < len ; i++ ) {
                         var children =  elems[i].parentNode.childNodes;
-                        if((index >= 0 && children[index] == elems[i]) 
+                        if((index >= 0 && children[index] == elems[i])
                             || (index < 0 && children[children.length - 1] == elems[i]))
                                  ret.push(elems[i]);
                     }
@@ -1110,13 +1113,13 @@ Ten._SelectorNode = new Ten.Class({
                     array.push(e);
                 }
                 for (var i = 0, len = elems.length ; i < len ; i++ ){
-                   checkArray(parents, elems[i].parentNode); 
+                   checkArray(parents, elems[i].parentNode);
                 }
                 var ret = [];
-                for (var j = 0, len = parents.length ; j < len ; j++) {
+                for (var j = 0, len = <any>parents.length ; j < len ; j++) {
                     var children = parents[j].childNodes;
                     for (var n = 0; n < children.length; n++) {
-                        var i = a * n + b - 1;
+                        var i = (<number>a) * n + (<number>b) - 1;
                         if (i < 0) continue;
                         if (children[i] && children[i].tagName == tagName) ret.push(children[i]);
                     }
@@ -1375,7 +1378,7 @@ Ten.Geometry = new Ten.Class({
     },
     getElementPosition: function(e) {
         var pos = {x:0, y:0};
-        if (document.documentElement.getBoundingClientRect) { // IE 
+        if (document.documentElement.getBoundingClientRect) { // IE
             var box = e.getBoundingClientRect();
             var owner = e.ownerDocument;
             pos.x = box.left + Math.max(owner.documentElement.scrollLeft, owner.body.scrollLeft) - 2;
@@ -1501,7 +1504,7 @@ Ten.Logger = new Ten.Class({
 });
 
 /* DEPRECATED: Ten.Browser */
-Ten.Browser = {
+Ten.Browser = <Ten.Browser><any>{
     isIE: navigator.userAgent.indexOf('MSIE') != -1,
     isIE6 : navigator.userAgent.indexOf('MSIE 6.') != -1,
     isIE7 : navigator.userAgent.indexOf('MSIE 7.') != -1,

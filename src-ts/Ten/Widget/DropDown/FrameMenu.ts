@@ -1,4 +1,5 @@
-Ten.Widget.DropDown.FrameMenu = function () {
+// @ts-ignore
+Ten.Widget.DropDown.FrameMenu = <Ten.Widget.DropDown.FrameMenu>function () {
   return this.init.apply(this, arguments);
 };
 
@@ -21,7 +22,7 @@ Ten.Widget.DropDown.FrameMenu.prototype.preparePanel = function () {
   if (this.panelPrepared) return;
   this.panelPrepared = true;
   var panel = document.createElement('iframe');
-  panel.frameBorder = 0;
+  panel.frameBorder = <string><any>0;
   panel.className = 'ten-hidden ten-framemenu-iframe';
   panel.src = this.elements.button.getAttribute('data-menu-url');
   panel.setAttribute('allowtransparency', 'true');

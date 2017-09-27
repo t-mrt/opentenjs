@@ -1,4 +1,4 @@
-if (!Ten.TextArea) Ten.TextArea = {};
+if (!Ten.TextArea) Ten.TextArea = <Ten.TextArea>{};
 
 /* |ta| is either |textarea| or |input| whose |type| attribute is
    |text| or similar value. */

@@ -7,8 +7,24 @@ var log = function (m) {
         }
 };
 
-var Messenger = function () { this.init.apply(this, arguments) };
-Messenger.createForParent = function (origin /* for postMessage variant */, safeOriginPattern) {
+interface Messenger {
+    (opt?: {
+        key : string;
+        url : string;
+        input : Window | any;
+        output : any;
+        safeOriginPattern?: any;
+    }): void;
+    createForParent: (origin, safeOriginPattern) => Messenger;
+    SIGNATURE: string;
+    createForFrame: (frame, url) =>  Messenger;
+    findEmptyResource: () => any;
+    emptyResourceURL: any;
+    absolute: (url: string) => string;
+}
+
+var Messenger = <Messenger> function () { this.init.apply(this, arguments) };
+Messenger.createForParent = function (this: Messenger, origin /* for postMessage variant */, safeOriginPattern) {
         if (window.parent == window) return null;
         var iframe = document.createElement('iframe');
         var opts   = window.name.split('|', 2);
@@ -17,8 +33,8 @@ Messenger.createForParent = function (origin /* for postMessage variant */, safe
         document.body.appendChild(iframe);
         var output = iframe.contentWindow;
         output.name = key;
-        iframe.width = 1;
-        iframe.height = 1;
+        iframe.width = <string><any>1;
+        iframe.height = <string><any>1;
         iframe.setAttribute('style', 'height:1px;width:1px;visibility:hidden;');
         output.location.replace(url);
         return new this({
@@ -30,7 +46,7 @@ Messenger.createForParent = function (origin /* for postMessage variant */, safe
         });
 };
 Messenger.SIGNATURE = 'MZ';
-Messenger.createForFrame = function (frame, url) {
+Messenger.createForFrame = function (this: Messenger, frame, url) {
         var output = frame.contentWindow;
         // 2821109907456 = 36 ** 8
         var key    = Messenger.SIGNATURE + Math.floor(Math.random() * 2821109907456 + 2821109907456).toString(36).substring(1) + '@';
@@ -64,7 +80,7 @@ Messenger.findEmptyResource = function () {
                 }
         }
 */
-        
+
         return null;
 };
 Messenger.absolute = function (url) {
@@ -72,6 +88,7 @@ Messenger.absolute = function (url) {
         img.src = url;
         var ret = img.src;
         img.src = '';
+        // @ts-ignore
         delete img;
         return ret;
 };
@@ -110,6 +127,7 @@ Messenger.prototype = {
                 var self = this;
 
                 if (typeof data === 'undefined') data = null;
+                // @ts-ignore
                 var body = encodeURIComponent(Ten.JSON.stringify({
                         type : type,
                         data : obj
@@ -188,13 +206,13 @@ Messenger.prototype = {
                         self.buffer.push(message);
 
                         if (message.msgrest != 0) return;
-
+                        // @ts-ignore
                         var data = '';
                         for (var i = 0, it; it = self.buffer[i]; i++) {
                                 data += it.data;
                         }
                         self.buffer = [];
-
+                        // @ts-ignore
                         var obj = Ten.JSON.parse(decodeURIComponent(data));
 
                         if (!self.queue.length) {
@@ -292,7 +310,7 @@ Messenger.prototype = {
         }
 };
 
-if (window.postMessage && !window.tenNoPostMessage && window.addEventListener) {
+if (window.postMessage && !(<any>window).tenNoPostMessage && window.addEventListener) {
   Messenger.createForParent = function (origin, safeOriginPattern) {
     var self = new this({
       postTo: parent,
@@ -333,6 +351,7 @@ if (window.postMessage && !window.tenNoPostMessage && window.addEventListener) {
     this.safeOriginPattern = opts.safeOriginPattern;
     this.key = opts.key;
     var code = function (ev) {
+      // @ts-ignore
       var data = Ten.JSON.parse(ev.data);
 
       // Pairing
@@ -382,10 +401,11 @@ if (window.postMessage && !window.tenNoPostMessage && window.addEventListener) {
   Messenger.prototype.send = function (type, obj) {
     var data = {key: this.key, type: type, data: obj};
     log([data, this.postTo, this.postToOrigin]);
+    // @ts-ignore
     this.postTo.postMessage(Ten.JSON.stringify(data), this.postToOrigin);
   };
 }
-
+// @ts-ignore
 Ten.XDMessenger = Messenger;
 
 })();

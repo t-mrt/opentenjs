@@ -86,7 +86,7 @@ Ten.AsyncLoader = new Ten.Class({
               // XXX
               var query = this.url.replace(/\#.*/, '').split(/\?/, 2)[1] || '';
               query = query.replace(/^\?/, '').split(/[&;]/);
-              var newQuery = ['async=' + linkClassName];
+              var newQuery: string | string[] = ['async=' + linkClassName];
               for (var i = 0; i < query.length; i++) {
                 var q = query[i];
                 if (!/^(?:locale\..*|only)=/.test(q)) newQuery.push(q);
@@ -140,7 +140,7 @@ Ten.AsyncLoader = new Ten.Class({
         } else if (targetType == 'noscript') {
           eventType = 'now';
         }
-        var onEvent = function (ev) {
+        var onEvent = function (ev?) {
           var pf = Ten.AsyncLoader.pageFragmentLoader(targetEl, additionalParams);
           pf.elements = elements;
           pf.openURLOnError = !map.errors;

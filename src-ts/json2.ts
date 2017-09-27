@@ -183,9 +183,9 @@ if (!this.JSON) {
                  f(this.getUTCSeconds())   + 'Z' : null;
         };
 
-        String.prototype.toJSON =
-        Number.prototype.toJSON =
-        Boolean.prototype.toJSON = function (key) {
+        (<any>String.prototype).toJSON =
+        (<any>Number.prototype).toJSON =
+        (<any>Boolean.prototype).toJSON = function (key) {
             return this.valueOf();
         };
     }
@@ -263,6 +263,7 @@ if (!this.JSON) {
             return isFinite(value) ? String(value) : 'null';
 
         case 'boolean':
+        // @ts-ignore
         case 'null':
 
 // If the value is a boolean or null, convert it to a string. Note:

@@ -70,6 +70,7 @@
         img.src = url;
         var ret = img.src;
         img.src = '';
+        // @ts-ignore
         delete img;
         return ret;
     };
@@ -105,6 +106,7 @@
             var self = this;
             if (typeof data === 'undefined')
                 data = null;
+            // @ts-ignore
             var body = encodeURIComponent(Ten.JSON.stringify({
                 type: type,
                 data: obj
@@ -178,11 +180,13 @@
                 self.buffer.push(message);
                 if (message.msgrest != 0)
                     return;
+                // @ts-ignore
                 var data = '';
                 for (var i = 0, it; it = self.buffer[i]; i++) {
                     data += it.data;
                 }
                 self.buffer = [];
+                // @ts-ignore
                 var obj = Ten.JSON.parse(decodeURIComponent(data));
                 if (!self.queue.length) {
                     self.queue.push({
@@ -312,6 +316,7 @@
             this.safeOriginPattern = opts.safeOriginPattern;
             this.key = opts.key;
             var code = function (ev) {
+                // @ts-ignore
                 var data = Ten.JSON.parse(ev.data);
                 // Pairing
                 if (data.type == 'TenXDMessengerSetKey') {
@@ -361,8 +366,10 @@
         Messenger.prototype.send = function (type, obj) {
             var data = { key: this.key, type: type, data: obj };
             log([data, this.postTo, this.postToOrigin]);
+            // @ts-ignore
             this.postTo.postMessage(Ten.JSON.stringify(data), this.postToOrigin);
         };
     }
+    // @ts-ignore
     Ten.XDMessenger = Messenger;
 })();

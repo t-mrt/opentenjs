@@ -1,7 +1,7 @@
 
 /* Ten.IFrameMessenger */
       if (typeof Ten.IFrameMessenger == 'undefined') {
-        Ten.IFrameMessenger = {};
+        Ten.IFrameMessenger = <Ten.IFrameMessenger>{};
         Ten.IFrameMessenger.Base = new Ten.Class({
           initialize: function(interval) {
             Ten.EventDispatcher.implementEventDispatcher(this);
@@ -34,7 +34,10 @@
           },
           unseriarize: function(raw) {
             var tmp = raw.split('?', 2);
-            var res = {};
+            var res = <{
+                eventName: any
+                args: any
+            }>{};
             res.eventName = tmp[0];
             if (tmp[1]) {
               if (tmp[1].indexOf('=') == -1) {
