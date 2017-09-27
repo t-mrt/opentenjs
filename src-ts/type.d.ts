@@ -1,6 +1,7 @@
 declare namespace Ten {
     interface Class {
         (...args): void
+        inherit(c, klass)
     }
     interface Widget {
         OptionButtons: OptionButtons
@@ -34,6 +35,7 @@ declare namespace Ten {
     }
     interface EventDispatcher {
         implementEventDispatcher(t)
+        prototype
     }
     interface TextArea {
         insertText: any;
@@ -47,6 +49,8 @@ declare namespace Ten {
         insertStyleRules: any
         StyleSheet: StyleSheet
         getElementStyle(window, a)
+        _cache
+        getGlobalRule
     }
     interface StyleSheet {
         IE
@@ -60,12 +64,18 @@ declare namespace Ten {
         (a, a2: string, a3, a4?: string): void
     }
     interface Geometry {
+        (): void
         getScroll(): any
         getElementPosition(a1): any;
         setScroll(pos)
         getWindowSize()
+        getMousePosition(e)
+        _initialized
+        _functions
+        _getRoot(w)
     }
     interface Position {
+        (a,b): void
         subtract(a1, a2): any;
     }
     interface Browser {
@@ -76,6 +86,17 @@ declare namespace Ten {
         isIE6
         isDSi
         isWii
+        isChrome
+        isTouch
+        isSmartPhone
+        isIPhone
+        isAndroid
+        isIE7
+        isFirefox
+        isOSX
+        CSS
+        noQuirks
+        is3DS
     }
     interface AsyncLoader {
         insert(style): void
@@ -117,6 +138,7 @@ declare namespace Ten {
 
     interface Element {
         (style:string, o, e?): void
+        dispatchEvent(e,el)
     }
     interface DOM {
         removeAllChildren(styleSheet)
@@ -128,13 +150,26 @@ declare namespace Ten {
         addClassName(a1, a2)
         removeClassName(a1, a2)
         hasClassName(el, name);
+        someParentNode(node, func)
+        observer
+        loaded
+        finishLoad
+        dispatchEvent(s)
+        addObserver()
+        getElementsByTagAndClassName(tname,cname,parent)
+        orig_getElementsByTagAndClassName
     }
     interface Storage {
         Local: Local
     }
     interface Resizable {}
     interface Selector {
-        getElementsBySelector(a, window)
+        (a): void
+        getElementsBySelector(a, window?)
+        _getNodeDepth(a)
+        _getSiblingDepth(b)
+        _elementArrayFlatten(ret)
+        _sortByElementOrder
     }
     interface JSON {
         parse(text)
@@ -157,6 +192,7 @@ declare namespace Ten {
     interface Color {
         (a1: number, a2: number, a3: number, a4?: number): void
         parseFromElementColor(node, t)
+        parseFromString(ret)
     }
     interface Form  {
         Placeholder: Placeholder
@@ -179,6 +215,11 @@ declare namespace Ten {
     interface Box {}
     interface Array {
         forEach(s, c)
+        flatten
+        dup
+        indexOf
+        isArray
+        find
     }
     interface Deferred {
         (): void
@@ -210,11 +251,43 @@ declare namespace Ten {
     interface Cookie {
         (): void
     }
+    interface Function {
+        bind(o1, o2)
+        method
+    }
+    interface JSONP {
+        (uri,o,m): void
+        Callbacks: {
+            length
+            push
+        }
+        addCallback(obj,method)
+        MaxBytes
+    }
+    interface SelectorNode {
+        (a1, a2, a3): void
+    }
+    // interface _Selector {
+    //     (a1): void
+    // }
+    // interface _SelectorNode {
+    //     (a1, a2, a3): void
+    // }
+    interface Logger {
+
+    }
     interface Static {
+        NAME
+        VERSION
         _stash: {
             lastPos:any
         }
+        _SelectorNode: SelectorNode
+        _Selector: Selector
+        SelectorNode: SelectorNode
         querySelectorAll(selectors, div)
+        querySelector(selector, elem)
+        Logger: Logger
         Class: Class
         Widget: Widget
         Timer: Timer
@@ -240,9 +313,14 @@ declare namespace Ten {
         Form: Form
         Extras: Extras
         Box: Box
-        Array: Array
         Deferred: Deferred
         Cookie: Cookie
+        Function: Function
+        Array: Array
+        JSONP: JSONP
+        XHR
+        Event
+
     }
 
 }
@@ -260,6 +338,7 @@ interface Window {
 interface Document {
     selection:any
     createStyleSheet(style?: string)
+    getBoxObjectFor
 }
 
 interface HTMLScriptElement {
@@ -271,15 +350,26 @@ interface  HTMLLIElement{
     tenItemListIndex
  }
 
- interface Node {
+interface Node {
      data
  }
 
- interface Function {
+interface Function {
     _prev_timeout_called
  }
+
+interface StyleSheet {
+    cssRules
+    rules
+ }
+interface External{
+    consoleLog
+}
 
 declare var p
 declare var css
 declare var args
 declare var process
+declare var child
+declare var r,g,b
+declare var opera
